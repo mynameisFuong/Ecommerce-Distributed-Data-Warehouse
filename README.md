@@ -1,8 +1,51 @@
-# E-commerce Distributed Data Warehouse
+﻿# Distributed E-commerce Data Warehouse using Citus/PostgreSQL
 
-Project Ã„â€˜Ã¡Â»â€œ ÃƒÂ¡n mÃƒÂ´n CÃ†Â¡ sÃ¡Â»Å¸ dÃ¡Â»Â¯ liÃ¡Â»â€¡u phÃƒÂ¢n tÃƒÂ¡n: xÃƒÂ¢y dÃ¡Â»Â±ng Data Warehouse phÃƒÂ¢n tÃƒÂ¡n cho dÃ¡Â»Â¯ liÃ¡Â»â€¡u thÃ†Â°Ã†Â¡ng mÃ¡ÂºÂ¡i Ã„â€˜iÃ¡Â»â€¡n tÃ¡Â»Â­ Olist.
+Đồ án cuối kỳ môn Cơ sở dữ liệu phân tán: xây dựng kho dữ liệu thương mại điện tử phân tán từ bộ dữ liệu Olist CSV.
 
-## 1. Raw CSV cÃ¡ÂºÂ§n Ã„â€˜Ã¡ÂºÂ·t trong `data/raw`
+Hệ thống sử dụng Python để thực hiện ETL, PostgreSQL/Citus để lưu trữ dữ liệu phân tán, Docker Compose để triển khai các container, và Apache Airflow để điều phối pipeline end-to-end.
+
+## 1. Kiến trúc tổng quan
+
+```text
+Data source CSV
+    -> Airflow DAG orchestration
+    -> Python ETL pipeline
+        -> Extract: kiểm tra file raw CSV
+        -> Transform: chuyển đổi sang Star Schema
+        -> Load: nạp dữ liệu vào Citus/PostgreSQL
+    -> Distributed Data Warehouse
+        -> 1 coordinator node
+        -> 4 worker nodes
+    -> SQL Client / BI Tool / Application
+```
+
+Cấu hình phân tán chính:
+
+```text
+Database: ecommerce_dw
+Schema: ecommerce_dw
+Fact table: fact_olist_orders
+Distribution key: order_id
+Sharding strategy: horizontal hash sharding
+Shard count: 32
+Replication factor: 2
+Dimension tables: reference tables, được replicate tới tất cả worker nodes
+```
+
+## 2. Cấu trúc thư mục chính
+
+```text
+data/raw                  Chứa file CSV nguồn
+data/warehouse            Chứa file CSV sau transform
+dags                      Airflow DAG
+etl                       Python ETL scripts
+sql                       SQL schema, distributed table, benchmark, verify
+docs                      Tài liệu thiết kế và kết quả kiểm thử
+```
+
+## 3. Raw CSV cần đặt trong data/raw
+
+Các file CSV nguồn cần giữ đúng tên như sau:
 
 ```text
 olist_orders_dataset.csv
@@ -15,28 +58,35 @@ olist_products_dataset.csv
 product_category_name_translation.csv
 ```
 
-File `product_category_name_translation.csv` lÃƒÂ  tÃƒÂ¹y chÃ¡Â»Ân, nhÃ†Â°ng nÃƒÂªn cÃƒÂ³ Ã„â€˜Ã¡Â»Æ’ dashboard dÃ¡Â»â€¦ Ã„â€˜Ã¡Â»Âc hÃ†Â¡n.
+Khi thay dataset khác, có thể thay dữ liệu bên trong nhưng nên giữ nguyên tên file và cấu trúc cột để pipeline ETL đọc đúng nguồn dữ liệu.
 
-## 2. CÃƒÂ i thÃ†Â° viÃ¡Â»â€¡n Python
+## 4. Cài thư viện Python
 
 ```powershell
 cd C:\Users\ADMIN\Desktop\Final_Final_Final_Project
 python -m pip install -r requirements.txt
 ```
 
-## 3. ChÃ¡ÂºÂ¡y transform
+Nếu đang dùng virtual environment:
 
 ```powershell
-python etl/transform.py
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
 ```
 
-KÃ¡ÂºÂ¿t quÃ¡ÂºÂ£ sÃ¡ÂºÂ½ Ã„â€˜Ã†Â°Ã¡Â»Â£c tÃ¡ÂºÂ¡o trong:
+## 5. Chạy transform thủ công
+
+```powershell
+python .\etl\transform.py
+```
+
+Kết quả sẽ được tạo trong:
 
 ```text
 data/warehouse
 ```
 
-Bao gÃ¡Â»â€œm:
+Bao gồm các bảng Star Schema dạng CSV:
 
 ```text
 fact_olist_orders.csv
@@ -48,22 +98,26 @@ dim_payment.csv
 dim_review.csv
 ```
 
-## 4. DÃ¡Â»Â±ng Citus cluster bÃ¡ÂºÂ±ng Docker
+## 6. Khởi động Citus cluster và Airflow
 
 ```powershell
 docker compose up -d
 docker compose ps
 ```
 
-Cluster gÃ¡Â»â€œm:
+Các container chính:
 
 ```text
-citus-coordinator: localhost:15432
-citus-worker-1
-citus-worker-2
+ecommerce-citus-coordinator
+ecommerce-citus-worker-1
+ecommerce-citus-worker-2
+ecommerce-citus-worker-3
+ecommerce-citus-worker-4
+ecommerce-airflow-webserver
+ecommerce-airflow-scheduler
 ```
 
-ThÃƒÂ´ng tin kÃ¡ÂºÂ¿t nÃ¡Â»â€˜i mÃ¡ÂºÂ·c Ã„â€˜Ã¡Â»â€¹nh:
+Thông tin kết nối PostgreSQL/Citus từ máy host:
 
 ```text
 host: 127.0.0.1
@@ -73,44 +127,41 @@ user: postgres
 password: postgres
 ```
 
-## 5. Load dÃ¡Â»Â¯ liÃ¡Â»â€¡u vÃƒÂ o Distributed Warehouse
+## 7. Load dữ liệu vào Distributed Data Warehouse
 
-ChÃ¡ÂºÂ¡y lÃ¡ÂºÂ¡i transform trÃ†Â°Ã¡Â»â€ºc khi load Ã„â€˜Ã¡Â»Æ’ CSV khÃ¡Â»â€ºp schema mÃ¡Â»â€ºi nhÃ¡ÂºÂ¥t:
+Chạy lại transform trước khi load để đảm bảo dữ liệu warehouse CSV mới nhất:
 
 ```powershell
 python .\etl\transform.py
 ```
 
-Sau Ã„â€˜ÃƒÂ³ load vÃƒÂ o Citus:
+Sau đó load vào Citus:
 
 ```powershell
 python .\etl\load.py
 ```
 
-Script `load.py` sÃ¡ÂºÂ½ tÃ¡Â»Â± Ã„â€˜Ã¡Â»â„¢ng:
+Script load sẽ tự động:
 
 ```text
-1. Ã„ÂÃ„Æ’ng kÃƒÂ½ citus-worker-1 vÃƒÂ  citus-worker-2 vÃƒÂ o coordinator.
-2. ChÃ¡ÂºÂ¡y sql/01_create_schema.sql.
-3. ChÃ¡ÂºÂ¡y sql/02_create_distributed_tables.sql.
-4. COPY cÃƒÂ¡c file CSV trong data/warehouse vÃƒÂ o cÃƒÂ¡c bÃ¡ÂºÂ£ng warehouse.
+1. Kiểm tra hoặc tạo database ecommerce_dw.
+2. Kết nối tới coordinator.
+3. Đăng ký 4 worker nodes vào Citus cluster.
+4. Chạy sql/01_create_schema.sql.
+5. Chạy sql/02_create_distributed_tables.sql.
+6. COPY các file CSV trong data/warehouse vào các bảng warehouse.
+7. Tạo các role phân quyền trong sql/06_create_access_roles.sql.
 ```
 
-NÃ¡ÂºÂ¿u muÃ¡Â»â€˜n Ã„â€˜Ã„Æ’ng kÃƒÂ½ worker thÃ¡Â»Â§ cÃƒÂ´ng Ã„â€˜Ã¡Â»Æ’ kiÃ¡Â»Æ’m tra:
+## 8. Kiểm tra dữ liệu và trạng thái phân tán
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\register_citus_workers.ps1
-```
-
-## 6. KiÃ¡Â»Æ’m tra schema warehouse
-
-CÃƒÂ³ thÃ¡Â»Æ’ chÃ¡ÂºÂ¡y SQL trong container coordinator:
+Kết nối vào coordinator:
 
 ```powershell
 docker exec -it ecommerce-citus-coordinator psql -U postgres -d ecommerce_dw
 ```
 
-MÃ¡Â»â„¢t sÃ¡Â»â€˜ lÃ¡Â»â€¡nh kiÃ¡Â»Æ’m tra:
+Một số lệnh kiểm tra:
 
 ```sql
 SELECT COUNT(*) FROM ecommerce_dw.fact_olist_orders;
@@ -130,35 +181,37 @@ FROM pg_dist_node
 ORDER BY nodeid;
 ```
 
-## 7. Query phÃƒÂ¢n tÃƒÂ­ch
+Có thể chạy file verify có sẵn:
 
-CÃƒÂ¡c query mÃ¡ÂºÂ«u nÃ¡ÂºÂ±m trong:
+```powershell
+Get-Content .\sql\05_verify_citus.sql | docker exec -i ecommerce-citus-coordinator psql -U postgres -d ecommerce_dw -P pager=off
+```
+
+## 9. Benchmark query
+
+Các query phân tích và benchmark nằm trong:
 
 ```text
 sql/03_analytics_queries.sql
 sql/04_benchmark_queries.sql
 ```
 
-ChÃ¡ÂºÂ¡y file query phÃƒÂ¢n tÃƒÂ­ch:
+Chạy benchmark:
 
 ```powershell
-docker exec -i ecommerce-citus-coordinator psql -U postgres -d ecommerce_dw < .\sql\03_analytics_queries.sql
+Get-Content .\sql\04_benchmark_queries.sql | docker exec -i ecommerce-citus-coordinator psql -U postgres -d ecommerce_dw -P pager=off
 ```
 
-ChÃ¡ÂºÂ¡y file kiÃ¡Â»Æ’m tra Citus:
+Kết quả benchmark đã được ghi chú trong:
 
-```powershell
-docker exec -i ecommerce-citus-coordinator psql -U postgres -d ecommerce_dw < .\sql\05_verify_citus.sql
+```text
+docs/benchmark_summary.md
+docs/benchmark_citus_result.txt
 ```
-## 8. Airflow orchestration
 
-Airflow được tích hợp để chạy pipeline ETL end-to-end.
+## 10. Airflow orchestration
 
-Khởi động Airflow cùng Citus:
-
-```powershell
-docker compose up -d
-```
+Airflow được dùng để điều phối pipeline ETL end-to-end.
 
 Truy cập Airflow UI:
 
@@ -197,8 +250,58 @@ Kiểm tra trạng thái DAG run:
 docker exec ecommerce-airflow-scheduler airflow dags list-runs -d ecommerce_distributed_dw_etl --no-backfill -o table
 ```
 
-Tài liệu chi tiết nằm ở:
+Tài liệu chi tiết:
 
 ```text
 docs/orchestration_airflow.md
 ```
+
+## 11. Phân quyền truy cập
+
+Project có các role demo phục vụ báo cáo và kiểm thử:
+
+```text
+readonly_user    Chỉ được SELECT dữ liệu
+dashboard_user   Chỉ được SELECT dữ liệu, dùng cho dashboard/BI
+etl_user         Được load và cập nhật dữ liệu phục vụ ETL
+postgres         Admin, chỉ dùng cho quản trị hệ thống
+```
+
+Thông tin chi tiết nằm trong:
+
+```text
+sql/06_create_access_roles.sql
+docs/access_control_and_network.md
+```
+
+## 12. Public trong mạng LAN
+
+Coordinator được expose ra máy host qua port 15432. Thiết bị khác cùng mạng LAN có thể kết nối bằng IP của máy chạy Docker.
+
+Ví dụ:
+
+```text
+host: 192.168.100.192
+port: 15432
+database: ecommerce_dw
+username: readonly_user
+password: Readonly@2026!
+```
+
+Lưu ý: IP LAN chỉ dùng được trong cùng mạng nội bộ. Nếu muốn truy cập từ Internet, cần triển khai lên cloud/VPS, dùng VPN như Tailscale, hoặc cấu hình port forwarding có kiểm soát.
+
+## 13. Tài liệu báo cáo
+
+Một số tài liệu đã chuẩn bị trong thư mục docs:
+
+```text
+docs/schema_design.md
+docs/distributed_replication_design.md
+docs/node_storage_summary.md
+docs/replication_test.md
+docs/benchmark_summary.md
+docs/access_control_and_network.md
+docs/orchestration_airflow.md
+```
+
+
