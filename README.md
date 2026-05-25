@@ -6,6 +6,7 @@ Hệ thống sử dụng Python để thực hiện ETL, PostgreSQL/Citus để 
 
 ## 1. Kiến trúc tổng quan
 
+![Kiến trúc tổng quan](image/kien_truc_he_thong.png)
 ```text
 Data source CSV
     -> Airflow DAG orchestration
