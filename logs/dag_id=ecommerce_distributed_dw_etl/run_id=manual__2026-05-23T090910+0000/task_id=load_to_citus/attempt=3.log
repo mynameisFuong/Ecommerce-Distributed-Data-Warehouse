@@ -1,0 +1,49 @@
+[2026-05-23T09:14:47.360+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-05-23T09:14:47.431+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: ecommerce_distributed_dw_etl.load_to_citus manual__2026-05-23T09:09:10+00:00 [queued]>
+[2026-05-23T09:14:47.453+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: ecommerce_distributed_dw_etl.load_to_citus manual__2026-05-23T09:09:10+00:00 [queued]>
+[2026-05-23T09:14:47.454+0000] {taskinstance.py:2306} INFO - Starting attempt 3 of 4
+[2026-05-23T09:14:47.478+0000] {taskinstance.py:2330} INFO - Executing <Task(BashOperator): load_to_citus> on 2026-05-23 09:09:10+00:00
+[2026-05-23T09:14:47.493+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'ecommerce_distributed_dw_etl', 'load_to_citus', 'manual__2026-05-23T09:09:10+00:00', '--job-id', '7', '--raw', '--subdir', 'DAGS_FOLDER/ecommerce_etl_dag.py', '--cfg-path', '/tmp/tmpn1qbwldc']
+[2026-05-23T09:14:47.499+0000] {standard_task_runner.py:91} INFO - Job 7: Subtask load_to_citus
+[2026-05-23T09:14:47.499+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:62 DeprecationWarning: This process (pid=356) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2026-05-23T09:14:47.500+0000] {standard_task_runner.py:64} INFO - Started process 357 to run task
+[2026-05-23T09:14:47.611+0000] {task_command.py:426} INFO - Running <TaskInstance: ecommerce_distributed_dw_etl.load_to_citus manual__2026-05-23T09:09:10+00:00 [running]> on host 72e9764eb967
+[2026-05-23T09:14:47.778+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='ecommerce_dw_team' AIRFLOW_CTX_DAG_ID='ecommerce_distributed_dw_etl' AIRFLOW_CTX_TASK_ID='load_to_citus' AIRFLOW_CTX_EXECUTION_DATE='2026-05-23T09:09:10+00:00' AIRFLOW_CTX_TRY_NUMBER='3' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-05-23T09:09:10+00:00'
+[2026-05-23T09:14:47.779+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-05-23T09:14:47.801+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2026-05-23T09:14:47.808+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'cd /opt/***/project && python etl/load.py --warehouse-dir /opt/***/project/data/warehouse']
+[2026-05-23T09:14:47.827+0000] {subprocess.py:86} INFO - Output:
+[2026-05-23T09:14:48.230+0000] {subprocess.py:93} INFO - Loading warehouse to PostgreSQL/Citus at citus-coordinator:5432/ecommerce_dw
+[2026-05-23T09:14:48.243+0000] {subprocess.py:93} INFO - Checking database ecommerce_dw...
+[2026-05-23T09:14:48.244+0000] {subprocess.py:93} INFO - Database ecommerce_dw already exists
+[2026-05-23T09:14:48.244+0000] {subprocess.py:93} INFO - Connecting to database ecommerce_dw...
+[2026-05-23T09:14:48.257+0000] {subprocess.py:93} INFO - Registering Citus workers...
+[2026-05-23T09:14:48.258+0000] {subprocess.py:93} INFO - Creating Citus extension if needed...
+[2026-05-23T09:14:48.262+0000] {subprocess.py:93} INFO - Registering worker citus-worker-1:5432...
+[2026-05-23T09:14:48.268+0000] {subprocess.py:93} INFO - Registering worker citus-worker-2:5432...
+[2026-05-23T09:14:48.269+0000] {subprocess.py:93} INFO - Registering worker citus-worker-3:5432...
+[2026-05-23T09:14:48.270+0000] {subprocess.py:93} INFO - Registering worker citus-worker-4:5432...
+[2026-05-23T09:14:48.271+0000] {subprocess.py:93} INFO - Registered Citus workers:
+[2026-05-23T09:14:48.272+0000] {subprocess.py:93} INFO - - citus-worker-1:5432 active=True
+[2026-05-23T09:14:48.272+0000] {subprocess.py:93} INFO - - citus-worker-2:5432 active=True
+[2026-05-23T09:14:48.273+0000] {subprocess.py:93} INFO - - citus-worker-3:5432 active=True
+[2026-05-23T09:14:48.273+0000] {subprocess.py:93} INFO - - citus-worker-4:5432 active=True
+[2026-05-23T09:14:48.274+0000] {subprocess.py:93} INFO - Executing /opt/***/project/sql/01_create_schema.sql...
+[2026-05-23T09:14:48.665+0000] {subprocess.py:93} INFO - Executed /opt/***/project/sql/01_create_schema.sql
+[2026-05-23T09:14:48.665+0000] {subprocess.py:93} INFO - Executing /opt/***/project/sql/02_create_distributed_tables.sql...
+[2026-05-23T09:14:49.764+0000] {subprocess.py:93} INFO - Executed /opt/***/project/sql/02_create_distributed_tables.sql
+[2026-05-23T09:14:51.952+0000] {subprocess.py:93} INFO - Loaded dim_customer.csv into ecommerce_dw.dim_customer
+[2026-05-23T09:14:52.173+0000] {subprocess.py:93} INFO - Loaded dim_seller.csv into ecommerce_dw.dim_seller
+[2026-05-23T09:14:53.000+0000] {subprocess.py:93} INFO - Loaded dim_product.csv into ecommerce_dw.dim_product
+[2026-05-23T09:14:53.090+0000] {subprocess.py:93} INFO - Loaded dim_date.csv into ecommerce_dw.dim_date
+[2026-05-23T09:14:54.285+0000] {subprocess.py:93} INFO - Loaded dim_payment.csv into ecommerce_dw.dim_payment
+[2026-05-23T09:14:56.246+0000] {subprocess.py:93} INFO - Loaded dim_review.csv into ecommerce_dw.dim_review
+[2026-05-23T09:15:04.223+0000] {subprocess.py:93} INFO - Loaded fact_olist_orders.csv into ecommerce_dw.fact_olist_orders
+[2026-05-23T09:15:04.241+0000] {subprocess.py:93} INFO - Executing /opt/***/project/sql/06_create_access_roles.sql...
+[2026-05-23T09:15:04.388+0000] {subprocess.py:93} INFO - Executed /opt/***/project/sql/06_create_access_roles.sql
+[2026-05-23T09:15:04.411+0000] {subprocess.py:97} INFO - Command exited with return code 0
+[2026-05-23T09:15:04.413+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-05-23T09:15:04.457+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=ecommerce_distributed_dw_etl, task_id=load_to_citus, run_id=manual__2026-05-23T09:09:10+00:00, execution_date=20260523T090910, start_date=20260523T091447, end_date=20260523T091504
+[2026-05-23T09:15:04.519+0000] {local_task_job_runner.py:243} INFO - Task exited with return code 0
+[2026-05-23T09:15:04.557+0000] {taskinstance.py:3503} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-05-23T09:15:04.560+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

@@ -1,0 +1,58 @@
+{
+  "pipeline": "ecommerce_distributed_warehouse",
+  "step": "extract",
+  "status": "success",
+  "raw_dir": "/opt/airflow/project/data/raw",
+  "file_count": 8,
+  "files": [
+    {
+      "key": "orders",
+      "filename": "olist_orders_dataset.csv",
+      "path": "/opt/airflow/project/data/raw/olist_orders_dataset.csv",
+      "size_bytes": 17754356
+    },
+    {
+      "key": "order_items",
+      "filename": "olist_order_items_dataset.csv",
+      "path": "/opt/airflow/project/data/raw/olist_order_items_dataset.csv",
+      "size_bytes": 15551322
+    },
+    {
+      "key": "payments",
+      "filename": "olist_order_payments_dataset.csv",
+      "path": "/opt/airflow/project/data/raw/olist_order_payments_dataset.csv",
+      "size_bytes": 5881025
+    },
+    {
+      "key": "reviews",
+      "filename": "olist_order_reviews_dataset.csv",
+      "path": "/opt/airflow/project/data/raw/olist_order_reviews_dataset.csv",
+      "size_bytes": 14451670
+    },
+    {
+      "key": "customers",
+      "filename": "olist_customers_dataset.csv",
+      "path": "/opt/airflow/project/data/raw/olist_customers_dataset.csv",
+      "size_bytes": 9133399
+    },
+    {
+      "key": "sellers",
+      "filename": "olist_sellers_dataset.csv",
+      "path": "/opt/airflow/project/data/raw/olist_sellers_dataset.csv",
+      "size_bytes": 177799
+    },
+    {
+      "key": "products",
+      "filename": "olist_products_dataset.csv",
+      "path": "/opt/airflow/project/data/raw/olist_products_dataset.csv",
+      "size_bytes": 2412398
+    },
+    {
+      "key": "category_translation",
+      "filename": "product_category_name_translation.csv",
+      "path": "/opt/airflow/project/data/raw/product_category_name_translation.csv",
+      "size_bytes": 2613
+    }
+  ],
+  "created_at": "2026-05-23T09:09:13.869645+00:00"
+}
