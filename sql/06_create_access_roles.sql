@@ -1,21 +1,21 @@
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'readonly_user') THEN
-        CREATE ROLE readonly_user LOGIN PASSWORD 'Readonly@2026!';
+        CREATE ROLE readonly_user LOGIN PASSWORD '123456';
     ELSE
-        ALTER ROLE readonly_user LOGIN PASSWORD 'Readonly@2026!';
+        ALTER ROLE readonly_user LOGIN PASSWORD '123456';
     END IF;
 
     IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'dashboard_user') THEN
-        CREATE ROLE dashboard_user LOGIN PASSWORD 'Dashboard@2026!';
+        CREATE ROLE dashboard_user LOGIN PASSWORD '123456';
     ELSE
-        ALTER ROLE dashboard_user LOGIN PASSWORD 'Dashboard@2026!';
+        ALTER ROLE dashboard_user LOGIN PASSWORD '123456';
     END IF;
 
     IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'etl_user') THEN
-        CREATE ROLE etl_user LOGIN PASSWORD 'EtlLoad@2026!';
+        CREATE ROLE etl_user LOGIN PASSWORD '123456';
     ELSE
-        ALTER ROLE etl_user LOGIN PASSWORD 'EtlLoad@2026!';
+        ALTER ROLE etl_user LOGIN PASSWORD '123456';
     END IF;
 END
 $$;

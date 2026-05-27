@@ -1,0 +1,22 @@
+[2026-05-27T15:48:27.515+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-05-27T15:48:27.580+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: ecommerce_distributed_dw_etl.verify_warehouse manual__2026-05-27T15:46:48.681007+00:00 [queued]>
+[2026-05-27T15:48:27.601+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: ecommerce_distributed_dw_etl.verify_warehouse manual__2026-05-27T15:46:48.681007+00:00 [queued]>
+[2026-05-27T15:48:27.602+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 2
+[2026-05-27T15:48:27.630+0000] {taskinstance.py:2330} INFO - Executing <Task(BashOperator): verify_warehouse> on 2026-05-27 15:46:48.681007+00:00
+[2026-05-27T15:48:27.645+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'ecommerce_distributed_dw_etl', 'verify_warehouse', 'manual__2026-05-27T15:46:48.681007+00:00', '--job-id', '10', '--raw', '--subdir', 'DAGS_FOLDER/ecommerce_etl_dag.py', '--cfg-path', '/tmp/tmp1nvqi909']
+[2026-05-27T15:48:27.652+0000] {standard_task_runner.py:91} INFO - Job 10: Subtask verify_warehouse
+[2026-05-27T15:48:27.655+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:62 DeprecationWarning: This process (pid=503) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2026-05-27T15:48:27.658+0000] {standard_task_runner.py:64} INFO - Started process 504 to run task
+[2026-05-27T15:48:27.778+0000] {task_command.py:426} INFO - Running <TaskInstance: ecommerce_distributed_dw_etl.verify_warehouse manual__2026-05-27T15:46:48.681007+00:00 [running]> on host 10014fdd4115
+[2026-05-27T15:48:27.941+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='ecommerce_dw_team' AIRFLOW_CTX_DAG_ID='ecommerce_distributed_dw_etl' AIRFLOW_CTX_TASK_ID='verify_warehouse' AIRFLOW_CTX_EXECUTION_DATE='2026-05-27T15:46:48.681007+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-05-27T15:46:48.681007+00:00'
+[2026-05-27T15:48:27.943+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-05-27T15:48:27.969+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2026-05-27T15:48:27.974+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'python -c "import psycopg2; conn=psycopg2.connect(host=\'citus-coordinator\', port=5432, dbname=\'ecommerce_dw\', user=\'readonly_user\', password=\'123456\'); cur=conn.cursor(); cur.execute(\'SELECT COUNT(*) FROM ecommerce_dw.fact_olist_orders\'); count=cur.fetchone()[0]; print(f\'fact_olist_orders row count: {count}\'); assert count == 112650; conn.close()"']
+[2026-05-27T15:48:27.995+0000] {subprocess.py:86} INFO - Output:
+[2026-05-27T15:48:28.536+0000] {subprocess.py:93} INFO - fact_olist_orders row count: 112650
+[2026-05-27T15:48:28.563+0000] {subprocess.py:97} INFO - Command exited with return code 0
+[2026-05-27T15:48:28.565+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-05-27T15:48:28.604+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=ecommerce_distributed_dw_etl, task_id=verify_warehouse, run_id=manual__2026-05-27T15:46:48.681007+00:00, execution_date=20260527T154648, start_date=20260527T154827, end_date=20260527T154828
+[2026-05-27T15:48:28.640+0000] {local_task_job_runner.py:243} INFO - Task exited with return code 0
+[2026-05-27T15:48:28.663+0000] {taskinstance.py:3503} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2026-05-27T15:48:28.665+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

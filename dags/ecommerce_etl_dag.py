@@ -64,7 +64,7 @@ with DAG(
             "python -c \""
             "import psycopg2; "
             "conn=psycopg2.connect(host='citus-coordinator', port=5432, "
-            "dbname='ecommerce_dw', user='readonly_user', password='Readonly@2026!'); "
+            "dbname='ecommerce_dw', user='readonly_user', password='123456'); "
             "cur=conn.cursor(); "
             "cur.execute('SELECT COUNT(*) FROM ecommerce_dw.fact_olist_orders'); "
             "count=cur.fetchone()[0]; "

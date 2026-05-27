@@ -21,61 +21,60 @@ REQUIRED_RAW_KEYS = [
 ]
 
 
-def extract(raw_dir: Path = RAW_DIR, output_path: Path | None = None) -> dict:
-    missing = []
-    files = []
+def extract(raw_dir = RAW_DIR, output_path = None):
+    missing_files = []
+    file_info = []
 
     for key in REQUIRED_RAW_KEYS:
         filename = RAW_FILES[key]
-        path = raw_dir / filename
-        if not path.exists():
-            missing.append(str(path))
-            continue
-        files.append(
-            {
-                "key": key,
-                "filename": filename,
-                "path": str(path),
-                "size_bytes": path.stat().st_size,
-            }
-        )
+        file_path = raw_dir / filename
 
-    if missing:
-        raise FileNotFoundError(
-            "Missing required raw CSV files:\n" + "\n".join(missing)
-        )
-
+        file_info.append({
+            "key": key,
+            "filename": filename,
+            "path": str(file_path),
+            "size_bytes": file_path.stat().st_size
+        })
+    
     manifest = {
         "pipeline": "ecommerce_distributed_warehouse",
         "step": "extract",
         "status": "success",
         "raw_dir": str(raw_dir),
-        "file_count": len(files),
-        "files": files,
-        "created_at": datetime.now(timezone.utc).isoformat(),
+        "file_counts": len(file_info),
+        "file": file_info,
+        "create_at": datetime.now(timezone.utc).isoformat()
     }
 
     if output_path is None:
         output_path = PROJECT_ROOT / "data" / "processed" / "extract_manifest.json"
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    output_path.write_text(
+        json.dumps(manifest, indent=2),
+        encoding="utf-8"
+    )
 
-    print(f"Extract validation completed: {len(files)} files")
-    print(f"Wrote manifest: {output_path}")
     return manifest
 
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Validate Olist raw CSV files and write an extract manifest."
+def parse_args():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--raw-dir",
+        type=Path,
+        default=RAW_DIR,
+        help="Thư mục chứa file nguồn"
     )
-    parser.add_argument("--raw-dir", type=Path, default=RAW_DIR)
+
     parser.add_argument(
         "--output-path",
         type=Path,
         default=PROJECT_ROOT / "data" / "processed" / "extract_manifest.json",
+        help="Đường dẫn lưu file manifest"
     )
+
     return parser.parse_args()
 
 

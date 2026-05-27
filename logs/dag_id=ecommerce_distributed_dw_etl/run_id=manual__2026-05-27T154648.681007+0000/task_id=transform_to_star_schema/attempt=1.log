@@ -1,0 +1,28 @@
+[2026-05-27T15:46:53.137+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-05-27T15:46:53.213+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: ecommerce_distributed_dw_etl.transform_to_star_schema manual__2026-05-27T15:46:48.681007+00:00 [queued]>
+[2026-05-27T15:46:53.243+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: ecommerce_distributed_dw_etl.transform_to_star_schema manual__2026-05-27T15:46:48.681007+00:00 [queued]>
+[2026-05-27T15:46:53.246+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 2
+[2026-05-27T15:46:53.285+0000] {taskinstance.py:2330} INFO - Executing <Task(BashOperator): transform_to_star_schema> on 2026-05-27 15:46:48.681007+00:00
+[2026-05-27T15:46:53.308+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'ecommerce_distributed_dw_etl', 'transform_to_star_schema', 'manual__2026-05-27T15:46:48.681007+00:00', '--job-id', '8', '--raw', '--subdir', 'DAGS_FOLDER/ecommerce_etl_dag.py', '--cfg-path', '/tmp/tmp1w0yx93_']
+[2026-05-27T15:46:53.318+0000] {standard_task_runner.py:91} INFO - Job 8: Subtask transform_to_star_schema
+[2026-05-27T15:46:53.321+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:62 DeprecationWarning: This process (pid=470) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2026-05-27T15:46:53.323+0000] {standard_task_runner.py:64} INFO - Started process 471 to run task
+[2026-05-27T15:46:53.461+0000] {task_command.py:426} INFO - Running <TaskInstance: ecommerce_distributed_dw_etl.transform_to_star_schema manual__2026-05-27T15:46:48.681007+00:00 [running]> on host 10014fdd4115
+[2026-05-27T15:46:53.691+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='ecommerce_dw_team' AIRFLOW_CTX_DAG_ID='ecommerce_distributed_dw_etl' AIRFLOW_CTX_TASK_ID='transform_to_star_schema' AIRFLOW_CTX_EXECUTION_DATE='2026-05-27T15:46:48.681007+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-05-27T15:46:48.681007+00:00'
+[2026-05-27T15:46:53.692+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-05-27T15:46:53.716+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2026-05-27T15:46:53.719+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'cd /opt/***/project && python etl/transform.py --raw-dir /opt/***/project/data/raw --output-dir /opt/***/project/data/warehouse']
+[2026-05-27T15:46:53.739+0000] {subprocess.py:86} INFO - Output:
+[2026-05-27T15:48:08.495+0000] {subprocess.py:93} INFO - Wrote /opt/***/project/data/warehouse/dim_customer.csv (99,441 rows)
+[2026-05-27T15:48:08.498+0000] {subprocess.py:93} INFO - Wrote /opt/***/project/data/warehouse/dim_seller.csv (3,095 rows)
+[2026-05-27T15:48:08.499+0000] {subprocess.py:93} INFO - Wrote /opt/***/project/data/warehouse/dim_product.csv (32,951 rows)
+[2026-05-27T15:48:08.499+0000] {subprocess.py:93} INFO - Wrote /opt/***/project/data/warehouse/dim_date.csv (751 rows)
+[2026-05-27T15:48:08.500+0000] {subprocess.py:93} INFO - Wrote /opt/***/project/data/warehouse/dim_payment.csv (99,440 rows)
+[2026-05-27T15:48:08.500+0000] {subprocess.py:93} INFO - Wrote /opt/***/project/data/warehouse/dim_review.csv (98,673 rows)
+[2026-05-27T15:48:08.500+0000] {subprocess.py:93} INFO - Wrote /opt/***/project/data/warehouse/fact_olist_orders.csv (112,650 rows)
+[2026-05-27T15:48:08.632+0000] {subprocess.py:97} INFO - Command exited with return code 0
+[2026-05-27T15:48:08.633+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-05-27T15:48:08.672+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=ecommerce_distributed_dw_etl, task_id=transform_to_star_schema, run_id=manual__2026-05-27T15:46:48.681007+00:00, execution_date=20260527T154648, start_date=20260527T154653, end_date=20260527T154808
+[2026-05-27T15:48:08.711+0000] {local_task_job_runner.py:243} INFO - Task exited with return code 0
+[2026-05-27T15:48:08.746+0000] {taskinstance.py:3503} INFO - 1 downstream tasks scheduled from follow-on schedule check
+[2026-05-27T15:48:08.749+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

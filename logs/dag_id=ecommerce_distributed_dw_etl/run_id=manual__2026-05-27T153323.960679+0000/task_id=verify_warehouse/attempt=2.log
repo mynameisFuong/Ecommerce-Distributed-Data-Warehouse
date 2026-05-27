@@ -1,0 +1,44 @@
+[2026-05-27T15:37:04.966+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2026-05-27T15:37:05.028+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: ecommerce_distributed_dw_etl.verify_warehouse manual__2026-05-27T15:33:23.960679+00:00 [queued]>
+[2026-05-27T15:37:05.039+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: ecommerce_distributed_dw_etl.verify_warehouse manual__2026-05-27T15:33:23.960679+00:00 [queued]>
+[2026-05-27T15:37:05.040+0000] {taskinstance.py:2306} INFO - Starting attempt 2 of 2
+[2026-05-27T15:37:05.057+0000] {taskinstance.py:2330} INFO - Executing <Task(BashOperator): verify_warehouse> on 2026-05-27 15:33:23.960679+00:00
+[2026-05-27T15:37:05.069+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'ecommerce_distributed_dw_etl', 'verify_warehouse', 'manual__2026-05-27T15:33:23.960679+00:00', '--job-id', '6', '--raw', '--subdir', 'DAGS_FOLDER/ecommerce_etl_dag.py', '--cfg-path', '/tmp/tmpehv6hvzn']
+[2026-05-27T15:37:05.074+0000] {logging_mixin.py:188} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:62 DeprecationWarning: This process (pid=364) is multi-threaded, use of fork() may lead to deadlocks in the child.
+[2026-05-27T15:37:05.074+0000] {standard_task_runner.py:91} INFO - Job 6: Subtask verify_warehouse
+[2026-05-27T15:37:05.075+0000] {standard_task_runner.py:64} INFO - Started process 365 to run task
+[2026-05-27T15:37:05.171+0000] {task_command.py:426} INFO - Running <TaskInstance: ecommerce_distributed_dw_etl.verify_warehouse manual__2026-05-27T15:33:23.960679+00:00 [running]> on host 10014fdd4115
+[2026-05-27T15:37:05.330+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='ecommerce_dw_team' AIRFLOW_CTX_DAG_ID='ecommerce_distributed_dw_etl' AIRFLOW_CTX_TASK_ID='verify_warehouse' AIRFLOW_CTX_EXECUTION_DATE='2026-05-27T15:33:23.960679+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-05-27T15:33:23.960679+00:00'
+[2026-05-27T15:37:05.331+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2026-05-27T15:37:05.360+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2026-05-27T15:37:05.364+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'python -c "import psycopg2; conn=psycopg2.connect(host=\'citus-coordinator\', port=5432, dbname=\'ecommerce_dw\', user=\'readonly_user\', password=\'Readonly@2026!\'); cur=conn.cursor(); cur.execute(\'SELECT COUNT(*) FROM ecommerce_dw.fact_olist_orders\'); count=cur.fetchone()[0]; print(f\'fact_olist_orders row count: {count}\'); assert count == 112650; conn.close()"']
+[2026-05-27T15:37:05.394+0000] {subprocess.py:86} INFO - Output:
+[2026-05-27T15:37:05.756+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
+[2026-05-27T15:37:05.758+0000] {subprocess.py:93} INFO -   File "<string>", line 1, in <module>
+[2026-05-27T15:37:05.762+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.12/site-packages/psycopg2/__init__.py", line 122, in connect
+[2026-05-27T15:37:05.768+0000] {subprocess.py:93} INFO -     conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+[2026-05-27T15:37:05.770+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-05-27T15:37:05.771+0000] {subprocess.py:93} INFO - psycopg2.OperationalError: connection to server at "citus-coordinator" (172.18.0.3), port 5432 failed: FATAL:  password authentication failed for user "readonly_user"
+[2026-05-27T15:37:05.772+0000] {subprocess.py:93} INFO - connection to server at "citus-coordinator" (172.18.0.3), port 5432 failed: FATAL:  password authentication failed for user "readonly_user"
+[2026-05-27T15:37:05.772+0000] {subprocess.py:93} INFO - 
+[2026-05-27T15:37:05.793+0000] {subprocess.py:97} INFO - Command exited with return code 1
+[2026-05-27T15:37:05.796+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2026-05-27T15:37:05.831+0000] {taskinstance.py:2905} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 465, in _execute_task
+    result = _execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/taskinstance.py", line 432, in _execute_callable
+    return execute_callable(context=context, **execute_callable_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/baseoperator.py", line 401, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/operators/bash.py", line 243, in execute
+    raise AirflowException(
+airflow.exceptions.AirflowException: Bash command failed. The command returned a non-zero exit code 1.
+[2026-05-27T15:37:05.850+0000] {taskinstance.py:1206} INFO - Marking task as FAILED. dag_id=ecommerce_distributed_dw_etl, task_id=verify_warehouse, run_id=manual__2026-05-27T15:33:23.960679+00:00, execution_date=20260527T153323, start_date=20260527T153705, end_date=20260527T153705
+[2026-05-27T15:37:05.940+0000] {standard_task_runner.py:110} ERROR - Failed to execute job 6 for task verify_warehouse (Bash command failed. The command returned a non-zero exit code 1.; 365)
+[2026-05-27T15:37:06.015+0000] {local_task_job_runner.py:243} INFO - Task exited with return code 1
+[2026-05-27T15:37:06.075+0000] {taskinstance.py:3503} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2026-05-27T15:37:06.092+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

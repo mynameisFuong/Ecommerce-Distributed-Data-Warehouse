@@ -1,4 +1,4 @@
-import argparse
+﻿import argparse
 from pathlib import Path
 
 import pandas as pd
@@ -38,56 +38,64 @@ def read_csv(path: Path) -> pd.DataFrame:
     )
 
 
-def require_columns(df: pd.DataFrame, table_name: str, columns: list[str]) -> None:
-    missing = [column for column in columns if column not in df.columns]
-    if missing:
-        raise ValueError(f"{table_name} is missing columns: {', '.join(missing)}")
+def require_columns(df, table_name, required_columns):
+    missing_columns = []
+
+    for col in required_columns:
+        if col not in df.columns:
+            missing_columns.append(col)
+
+    if missing_columns:
+        raise ValueError(
+            f"{table_name} thieu cot: {', '.join(missing_columns)}"
+        )
 
 
-def to_number(series: pd.Series, default: float | None = None) -> pd.Series:
-    values = pd.to_numeric(series, errors="coerce")
+def to_number(column, default=None):
+    numbers = pd.to_numeric(column, errors="coerce")
+
     if default is not None:
-        values = values.fillna(default)
-    return values
+        numbers = numbers.fillna(default)
+
+    return numbers
 
 
-def to_datetime(series: pd.Series) -> pd.Series:
-    return pd.to_datetime(series, errors="coerce")
+def to_datetime(column):
+    return pd.to_datetime(column, errors="coerce")
 
 
-def to_date_key(series: pd.Series) -> pd.Series:
-    dates = to_datetime(series)
+def to_date_key(column):
+    dates = to_datetime(column)
     return dates.dt.strftime("%Y%m%d").astype("Int64")
 
 
-def fill_text(series: pd.Series, default: str = "unknown") -> pd.Series:
-    return series.fillna(default).replace("", default)
+def fill_text(column, default="unknown"):
+    return column.fillna(default).replace("", default)
 
 
-def load_raw_tables(raw_dir: Path) -> dict[str, pd.DataFrame]:
+def load_raw_tables(raw_dir):
     missing_files = []
     tables = {}
 
     for table_name in REQUIRED_TABLES:
-        path = raw_dir / RAW_FILES[table_name]
-        if not path.exists():
-            missing_files.append(str(path))
-            continue
-        tables[table_name] = read_csv(path)
+        file_name = RAW_FILES[table_name]
+        file_path = raw_dir / file_name
 
+        if not file_path.exists():
+            missing_files.append(str(file_path))
+        else:
+            tables[table_name] = read_csv(file_path)
+    
     if missing_files:
-        raise FileNotFoundError(
-            "Missing required raw CSV files:\n" + "\n".join(missing_files)
-        )
+        raise FileNotFoundError("Thieu file CSV:\n" + "\n".join(missing_files))
 
-    translation_path = raw_dir / RAW_FILES["category_translation"]
-    if translation_path.exists():
-        tables["category_translation"] = read_csv(translation_path)
+    translation_file = raw_dir / RAW_FILES["category_translation"]
+    if not translation_file.exists():
+        tables["category_translation"] = read_csv(translation_file)
 
     return tables
 
-
-def build_dim_customer(customers: pd.DataFrame) -> pd.DataFrame:
+def build_dim_customer(customers):
     require_columns(
         customers,
         "customers",
@@ -115,7 +123,7 @@ def build_dim_customer(customers: pd.DataFrame) -> pd.DataFrame:
     return dim.sort_values("customer_id").reset_index(drop=True)
 
 
-def build_dim_seller(sellers: pd.DataFrame) -> pd.DataFrame:
+def build_dim_seller(sellers):
     require_columns(
         sellers,
         "sellers",
@@ -131,9 +139,7 @@ def build_dim_seller(sellers: pd.DataFrame) -> pd.DataFrame:
     return dim.sort_values("seller_id").reset_index(drop=True)
 
 
-def build_dim_product(
-    products: pd.DataFrame, translation: pd.DataFrame | None
-) -> pd.DataFrame:
+def build_dim_product(products, translation):
     require_columns(
         products,
         "products",
@@ -190,7 +196,7 @@ def build_dim_product(
     return dim.sort_values("product_id").reset_index(drop=True)
 
 
-def build_dim_payment(payments: pd.DataFrame) -> pd.DataFrame:
+def build_dim_payment(payments):
     require_columns(
         payments,
         "payments",
@@ -237,7 +243,7 @@ def build_dim_payment(payments: pd.DataFrame) -> pd.DataFrame:
     return dim.sort_values("payment_id").reset_index(drop=True)
 
 
-def build_dim_review(reviews: pd.DataFrame) -> pd.DataFrame:
+def build_dim_review(reviews):
     require_columns(
         reviews,
         "reviews",
@@ -316,12 +322,7 @@ def build_dim_date(*date_series: pd.Series) -> pd.DataFrame:
     ].reset_index(drop=True)
 
 
-def build_fact_orders(
-    orders: pd.DataFrame,
-    order_items: pd.DataFrame,
-    dim_payment: pd.DataFrame,
-    dim_review: pd.DataFrame,
-) -> pd.DataFrame:
+def build_fact_orders(orders, order_items, dim_payment, dim_review):
     require_columns(
         orders,
         "orders",
@@ -451,14 +452,14 @@ def build_fact_orders(
     return fact[columns]
 
 
-def write_table(df: pd.DataFrame, output_dir: Path, filename: str) -> None:
+def write_table(df, output_dir, filename):
     output_dir.mkdir(parents=True, exist_ok=True)
     path = output_dir / filename
     df.to_csv(path, index=False, encoding="utf-8")
     print(f"Wrote {path} ({len(df):,} rows)")
 
 
-def transform(raw_dir: Path = RAW_DIR, output_dir: Path = WAREHOUSE_DIR) -> dict[str, pd.DataFrame]:
+def transform(raw_dir = RAW_DIR, output_dir = WAREHOUSE_DIR):
     tables = load_raw_tables(raw_dir)
 
     dim_customer = build_dim_customer(tables["customers"])
@@ -503,21 +504,19 @@ def transform(raw_dir: Path = RAW_DIR, output_dir: Path = WAREHOUSE_DIR) -> dict
     return outputs
 
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Transform Olist raw CSV files into star-schema warehouse CSV files."
-    )
+def parse_args():
+    parser = argparse.ArgumentParser()
     parser.add_argument(
         "--raw-dir",
         type=Path,
         default=RAW_DIR,
-        help="Directory that contains Olist raw CSV files.",
+        help="Thư mục chứa file nguồn (CSV raw)",
     )
     parser.add_argument(
         "--output-dir",
         type=Path,
         default=WAREHOUSE_DIR,
-        help="Directory where transformed warehouse CSV files will be written.",
+        help="Đường dẫn lưu file dim và fact của star schema",
     )
     return parser.parse_args()
 
@@ -525,3 +524,4 @@ def parse_args() -> argparse.Namespace:
 if __name__ == "__main__":
     args = parse_args()
     transform(args.raw_dir, args.output_dir)
+

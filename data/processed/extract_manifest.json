@@ -3,8 +3,8 @@
   "step": "extract",
   "status": "success",
   "raw_dir": "/opt/airflow/project/data/raw",
-  "file_count": 8,
-  "files": [
+  "file_counts": 8,
+  "file": [
     {
       "key": "orders",
       "filename": "olist_orders_dataset.csv",
@@ -54,5 +54,5 @@
       "size_bytes": 2613
     }
   ],
-  "created_at": "2026-05-23T09:09:13.869645+00:00"
+  "create_at": "2026-05-27T15:46:51.994206+00:00"
 }
