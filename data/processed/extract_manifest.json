@@ -9,50 +9,50 @@
       "key": "orders",
       "filename": "olist_orders_dataset.csv",
       "path": "/opt/airflow/project/data/raw/olist_orders_dataset.csv",
-      "size_bytes": 17754356
+      "size_bytes": 17654914
     },
     {
       "key": "order_items",
       "filename": "olist_order_items_dataset.csv",
       "path": "/opt/airflow/project/data/raw/olist_order_items_dataset.csv",
-      "size_bytes": 15551322
+      "size_bytes": 15438671
     },
     {
       "key": "payments",
       "filename": "olist_order_payments_dataset.csv",
       "path": "/opt/airflow/project/data/raw/olist_order_payments_dataset.csv",
-      "size_bytes": 5881025
+      "size_bytes": 5777138
     },
     {
       "key": "reviews",
       "filename": "olist_order_reviews_dataset.csv",
       "path": "/opt/airflow/project/data/raw/olist_order_reviews_dataset.csv",
-      "size_bytes": 14451670
+      "size_bytes": 14346950
     },
     {
       "key": "customers",
       "filename": "olist_customers_dataset.csv",
       "path": "/opt/airflow/project/data/raw/olist_customers_dataset.csv",
-      "size_bytes": 9133399
+      "size_bytes": 9033957
     },
     {
       "key": "sellers",
       "filename": "olist_sellers_dataset.csv",
       "path": "/opt/airflow/project/data/raw/olist_sellers_dataset.csv",
-      "size_bytes": 177799
+      "size_bytes": 174703
     },
     {
       "key": "products",
       "filename": "olist_products_dataset.csv",
       "path": "/opt/airflow/project/data/raw/olist_products_dataset.csv",
-      "size_bytes": 2412398
+      "size_bytes": 2379446
     },
     {
       "key": "category_translation",
       "filename": "product_category_name_translation.csv",
       "path": "/opt/airflow/project/data/raw/product_category_name_translation.csv",
-      "size_bytes": 2613
+      "size_bytes": 2542
     }
   ],
-  "create_at": "2026-05-27T15:46:51.994206+00:00"
+  "create_at": "2026-06-08T08:02:23.715944+00:00"
 }
